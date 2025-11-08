@@ -3,6 +3,7 @@
 #include "Matrix.hpp"
 #include "processing.hpp"
 #include <fstream>
+#include <string>
 
 using namespace std;
 
