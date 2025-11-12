@@ -3,8 +3,7 @@
 
 /* Matrix.hpp
  * Originally written by James Juett at the University of Michigan
- * for the image processing project in EECS 280, Winter 2016.
- * Modified by Ian Kim for better seam carving and energy-matrix related image editing.
+ * Modified by Ian Kim for seam carving and energy-matrix related image editing.
  */
 
 #include <iostream>

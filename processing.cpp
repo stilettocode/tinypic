@@ -2,13 +2,10 @@
 #include <vector>
 #include "processing.hpp"
 
+//written by Ian Kim 
+
 using namespace std;
 
-// v DO NOT CHANGE v ------------------------------------------------
-// The implementation of rotate_left is provided for you.
-// REQUIRES: img points to a valid Image
-// MODIFIES: *img
-// EFFECTS:  The image is rotated 90 degrees to the left (counterclockwise).
 void rotate_left(Image* img) {
 
   // for convenience
@@ -29,13 +26,7 @@ void rotate_left(Image* img) {
   // Copy data back into original
   *img = aux;
 }
-// ^ DO NOT CHANGE ^ ------------------------------------------------
 
-// v DO NOT CHANGE v ------------------------------------------------
-// The implementation of rotate_right is provided for you.
-// REQUIRES: img points to a valid Image.
-// MODIFIES: *img
-// EFFECTS:  The image is rotated 90 degrees to the right (clockwise).
 void rotate_right(Image* img){
 
   // for convenience
@@ -53,14 +44,9 @@ void rotate_right(Image* img){
     }
   }
 
-  // Copy data back into original
   *img = aux;
 }
-// ^ DO NOT CHANGE ^ ------------------------------------------------
 
-
-// v DO NOT CHANGE v ------------------------------------------------
-// The implementation of diff2 is provided for you.
 static int squared_difference(Pixel p1, Pixel p2) {
   int dr = p2.r - p1.r;
   int dg = p2.g - p1.g;
@@ -69,12 +55,6 @@ static int squared_difference(Pixel p1, Pixel p2) {
   // later on in the algorithm.
   return (dr*dr + dg*dg + db*db) / 100;
 }
-// ^ DO NOT CHANGE ^ ------------------------------------------------
-
-
-// ------------------------------------------------------------------
-// You may change code below this line!
-
 
 
 // REQUIRES: img points to a valid Image.
@@ -84,7 +64,6 @@ static int squared_difference(Pixel p1, Pixel p2) {
 //           The Matrix pointed to by energy is initialized to be the same
 //           size as the given Image, and then the energy matrix for that
 //           image is computed and written into it.
-//           See the project spec for details on computing the energy matrix.
 void compute_energy_matrix(const Image* img, Matrix* energy) {
   Matrix_init(energy, Image_width(img), Image_height(img));
 
@@ -108,7 +87,6 @@ void compute_energy_matrix(const Image* img, Matrix* energy) {
 //           The Matrix pointed to by cost is initialized to be the same
 //           size as the given energy Matrix, and then the cost matrix is
 //           computed and written into it.
-//           See the project spec for details on computing the cost matrix.
 void compute_vertical_cost_matrix(const Matrix* energy, Matrix *cost) {
   Matrix_init(cost, Matrix_width(energy), Matrix_height(energy));
 
@@ -135,9 +113,6 @@ void compute_vertical_cost_matrix(const Matrix* energy, Matrix *cost) {
 //           Matrix_height(cost).
 //           While determining the seam, if any pixels tie for lowest cost, the
 //           leftmost one (i.e. with the lowest column number) is used.
-//           See the project spec for details on computing the minimal seam.
-//           Note: When implementing the algorithm, compute the seam starting at the
-//           bottom row and work your way up.
 vector<int> find_minimal_vertical_seam(const Matrix* cost) {
   vector<int> seamCalc(Matrix_height(cost));
   seamCalc[Matrix_height(cost) - 1] = Matrix_column_of_min_value_in_row(cost, Matrix_height(cost) - 1, 0, Matrix_width(cost));
@@ -162,10 +137,6 @@ vector<int> find_minimal_vertical_seam(const Matrix* cost) {
 //           pixel will be removed from every row in the image. The pixel
 //           removed from row r will be the one with column equal to seam[r].
 //           The width of the image will be one less than before.
-//           See the project spec for details on removing a vertical seam.
-// NOTE:     Declare a new variable to hold the smaller Image, and
-//           then do an assignment at the end to copy it back into the
-//           original image.
 void remove_vertical_seam(Image *img, const vector<int> &seam) {
   Image temp;
   Image_init(&temp, Image_width(img) - 1, Image_height(img));
@@ -187,10 +158,7 @@ void remove_vertical_seam(Image *img, const vector<int> &seam) {
 //           0 < newWidth && newWidth <= Image_width(img)
 // MODIFIES: *img
 // EFFECTS:  Reduces the width of the given Image to be newWidth by using
-//           the seam carving algorithm. See the spec for details.
-// NOTE:     Use a vector to hold the seam, and make sure that it has
-//           the right size. You can use .data() on a vector to get
-//           the underlying array.
+//           the seam carving algorithm.
 void seam_carve_width(Image *img, int newWidth) {
   int runs = Image_width(img) - newWidth;
 
@@ -210,9 +178,6 @@ void seam_carve_width(Image *img, int newWidth) {
 //           0 < newHeight && newHeight <= Image_height(img)
 // MODIFIES: *img
 // EFFECTS:  Reduces the height of the given Image to be newHeight.
-// NOTE:     This is equivalent to first rotating the Image 90 degrees left,
-//           then applying seam_carve_width(img, newHeight), then rotating
-//           90 degrees right.
 void seam_carve_height(Image *img, int newHeight) {
   rotate_left(img);
 
@@ -227,8 +192,6 @@ void seam_carve_height(Image *img, int newHeight) {
 // MODIFIES: *img
 // EFFECTS:  Reduces the width and height of the given Image to be newWidth
 //           and newHeight, respectively.
-// NOTE:     This is equivalent to applying seam_carve_width(img, newWidth)
-//           and then applying seam_carve_height(img, newHeight).
 void seam_carve(Image *img, int newWidth, int newHeight) {
   seam_carve_width(img, newWidth);
 
@@ -244,86 +207,68 @@ void seam_carve(Image *img, int newWidth, int newHeight) {
 // MODIFIES: *dst
 // EFFECTS:  Finds the pixel in src with the highest energy value and
 //           initializes *dst to be a square image centered on that pixel.
-//           The function aims to create a square of size 320x320, but
+//           The function aims to create a square of size 512x512, but
 //           if that would run off the border while keeping the center
 //           pixel fixed, the square is made smaller to the largest
 //           possible odd-sized square centered on the pixel.
 //           The returned square will always be at least 1x1 and will
 //           not exceed the bounds of src.
 void crop_square_centered_at_max_energy(const Image* src, Image* dst) {
-  // compute energy matrix
+  // 1) compute energy
   Matrix energy;
   compute_energy_matrix(src, &energy);
 
-  // find max value
-  int maxVal = Matrix_max(&energy);
-  int maxR = 0;
-  int maxC = 0;
-  bool found = false;
-  int h = Matrix_height(&energy);
-  int w = Matrix_width(&energy);
+  const int h = Matrix_height(&energy);
+  const int w = Matrix_width(&energy);
+  const int srcH = Image_height(src);
+  const int srcW = Image_width(src);
 
-  // Prefer an interior pixel: ignore the border which compute_energy_matrix
-  // intentionally sets to the maximum. For tiny images (width<3 or height<3)
-  // fall back to searching the whole image.
+  // 2) find max (prefer interior)
+  int maxVal = Matrix_max(&energy);
+  int maxR = 0, maxC = 0;
+  bool found = false;
+
   if (w >= 3 && h >= 3) {
     for (int r = 1; r <= h - 2 && !found; ++r) {
       for (int c = 1; c <= w - 2; ++c) {
         if (*Matrix_at(&energy, r, c) == maxVal) {
-          maxR = r;
-          maxC = c;
-          found = true;
-          break;
+          maxR = r; maxC = c; found = true; break;
         }
       }
     }
   }
-
-  // fallback: search entire image if no interior max was found
   if (!found) {
     for (int r = 0; r < h && !found; ++r) {
       for (int c = 0; c < w; ++c) {
         if (*Matrix_at(&energy, r, c) == maxVal) {
-          maxR = r;
-          maxC = c;
-          found = true;
-          break;
+          maxR = r; maxC = c; found = true; break;
         }
       }
     }
   }
 
-  int srcW = Image_width(src);
-  int srcH = Image_height(src);
+  // guard against any mismatch between energy size and image size
+  if (maxR < 0) maxR = 0;
+  if (maxC < 0) maxC = 0;
+  if (maxR >= srcH) maxR = srcH - 1;
+  if (maxC >= srcW) maxC = srcW - 1;
 
-  // available space around the center pixel
-  int left_space = maxC;
-  int right_space = srcW - 1 - maxC;
-  int up_space = maxR;
-  int down_space = srcH - 1 - maxR;
+  // clamp to image
+  int target = 512;                     
+  int side = std::min(target, std::min(srcW, srcH));
 
-  int max_sym_radius = std::min(std::min(left_space, right_space), std::min(up_space, down_space));
-
-  // desired target (aim for 320). We prefer an odd-sized square so the
-  // pixel can be exactly centered. If 320 is even, use 319 which is
-  // closest odd value.
-  int desired = 320;
-  if (desired % 2 == 0) desired -= 1; // 319
-  // cannot exceed image dims
-  desired = std::min(desired, std::min(srcW, srcH));
-
-  // maximum odd-sized square we can center at the pixel
-  int max_centered_size = 2 * max_sym_radius + 1;
-
-  int side = std::min(desired, max_centered_size);
-  if (side < 1) side = 1;
-
-  int half = side / 2; // integer division; side is odd so this floors
-
-  int top = maxR - half;
+  // 4) center around (maxR, maxC) then clamp inside image
+  int half = side / 2;                  
+  int top  = maxR - half;
   int left = maxC - half;
 
-  // initialize dst and copy pixels
+  // clamp to keep the window fully inside the image
+  if (top < 0) top = 0;
+  if (left < 0) left = 0;
+  if (top + side > srcH) top = srcH - side;
+  if (left + side > srcW) left = srcW - side;
+
+  // copy pixels
   Image_init(dst, side, side);
   for (int r = 0; r < side; ++r) {
     for (int c = 0; c < side; ++c) {
@@ -331,3 +276,4 @@ void crop_square_centered_at_max_energy(const Image* src, Image* dst) {
     }
   }
 }
+

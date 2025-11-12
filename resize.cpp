@@ -5,13 +5,35 @@
 #include <fstream>
 #include <string>
 
+//written by Ian Kim 
+
 using namespace std;
 
 int main(int argc, char *argv[]) {
-  if (!(argc == 4 || argc == 5)) {
+  if (!(argc == 4 || argc == 5 || argc == 3)) {
     cout << "Usage: resize.exe IN_FILENAME OUT_FILENAME WIDTH [HEIGHT]\n"
      << "WIDTH and HEIGHT must be less than or equal to original" << endl;
     return 1;
+  }
+
+  if (argc == 3) {
+    string file = argv[1];
+    string outfile = argv[2];
+
+    ifstream fin(file);
+    if (!fin) {
+        cout << "Error opening file: " << file << endl;
+        return 2;
+    }
+
+    Image img;
+    Image_init(&img, fin);
+
+    Image dst;
+    crop_square_centered_at_max_energy(&img, &dst);
+
+    ofstream fout(outfile);
+    Image_print(&dst, fout);
   }
 
   if (argc == 5) {

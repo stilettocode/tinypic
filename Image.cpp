@@ -1,6 +1,8 @@
 #include <cassert>
 #include "Image.hpp"
 
+//written by Ian Kim 
+
 // REQUIRES: img points to an Image
 //           0 < width && 0 < height
 // MODIFIES: *img
@@ -29,7 +31,6 @@ void Image_init(Image* img, int width, int height) {
 // MODIFIES: *img, is
 // EFFECTS:  Initializes the Image by reading in an image in PPM format
 //           from the given input stream.
-// NOTE:     See the project spec for a discussion of PPM format.
 void Image_init(Image* img, std::istream& is) {
   std::string header;
   is >> header;
