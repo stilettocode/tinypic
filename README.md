@@ -29,6 +29,6 @@ People Crop (Non-warping):
 
 Content Crop (Warping)
 ```bash
-./resize glorioushorses.ppm outputfile.ppm
+./resize glorioushorses.ppm outputfile.ppm <new width> <new height>
 ```
 Note the clouds changing in shape as their least important pixels are removed.
