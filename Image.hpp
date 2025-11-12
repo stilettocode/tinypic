@@ -3,8 +3,7 @@
 
 /* Image.hpp
  * Originally written by James Juett at the University of Michigan
- * for the image processing project in EECS 280, Winter 2016.
- * Modified by Ian Kim for better seam carving and energy-matrix related image editing.
+ * Modified by Ian Kim for seam carving and energy-matrix related image editing.
  */
 
 #include <iostream>
@@ -44,7 +43,6 @@ void Image_init(Image* img, int width, int height);
 // MODIFIES: *img, is
 // EFFECTS:  Initializes the Image by reading in an image in PPM format
 //           from the given input stream.
-// NOTE:     See the project spec for a discussion of PPM format.
 void Image_init(Image* img, std::istream& is);
 
 // REQUIRES: img points to a valid Image
