@@ -31,4 +31,4 @@ Content Crop (Warping)
 ```bash
 ./resize glorioushorses.ppm outputfile.ppm <new width> <new height>
 ```
-Note the clouds changing in shape as their least important pixels are removed.
+Note the clouds changing in shape as their least important pixels are removed. You only need to use width if you'd like, and not include a height.
